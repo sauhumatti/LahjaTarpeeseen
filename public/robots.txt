@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://lahjatarpeeseen.fi/sitemap.xml
+
+# Common crawl optimizations
+Disallow: /api/
+Disallow: /_next/
+
+# Allow important pages
+Allow: /lahjaideat
+Allow: /blogi
+Allow: /tietoa
+Allow: /ota-yhteytta
+
+# Crawl delay
+Crawl-delay: 10
