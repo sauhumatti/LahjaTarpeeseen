@@ -1,38 +1,36 @@
+// website/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    // './pages/**/*.{js,ts,jsx,tsx,mdx}', // Consider removing this line as you use the app router
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#F0F9F8',
-          100: '#D5F0ED',
-          200: '#A9E1DC',
-          300: '#7ED3CA',
-          400: '#52C4B9',
-          500: '#0D9488',
-          600: '#0B7C73',
-          700: '#08655E',
-          800: '#064E48',
-          900: '#043733',
-        },
-        secondary: {
-          50: '#f8fafc',
-          100: '#F8F9FA',
-          200: '#E9ECEF',
-          300: '#DEE2E6',
-          400: '#CED4DA',
-          500: '#ADB5BD',
-          600: '#6C757D',
-          700: '#495057',
-          800: '#343A40',
-          900: '#212529',
-          950: '#020617'
-        }
+        // Define all colors at the top level for better compatibility
+        'primary-50': '#F0F9F8',
+        'primary-100': '#D5F0ED',
+        'primary-200': '#A9E1DC',
+        'primary-300': '#7ED3CA',
+        'primary-400': '#52C4B9',
+        'primary-500': '#0D9488',
+        'primary-600': '#0B7C73',
+        'primary-700': '#08655E',
+        'primary-800': '#064E48',
+        'primary-900': '#043733',
+        'secondary-50': '#f8fafc',
+        'secondary-100': '#F8F9FA',
+        'secondary-200': '#E9ECEF',
+        'secondary-300': '#DEE2E6',
+        'secondary-400': '#CED4DA',
+        'secondary-500': '#ADB5BD',
+        'secondary-600': '#6C757D',
+        'secondary-700': '#495057',
+        'secondary-800': '#343A40',
+        'secondary-900': '#212529',
+        'secondary-950': '#020617'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -2,13 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Use the color directly instead of using theme() function */
 @layer base {
   body {
-    @apply text-gray-800 bg-white;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-900;
+    color: #343A40; /* Using the hex value for secondary.800 directly */
+    background-color: white;
   }
 }
 
