@@ -51,10 +51,11 @@ export async function POST(request: Request) {
 
       queryEmbedding = embedding;
       logger.log(`[Hybrid Search API] Query embedding received`);
-    } catch (embedError: any) {
+    } catch (embedError: unknown) {
       logger.error(`[Hybrid Search API] Failed to get query embedding:`, embedError);
+      const message = embedError instanceof Error ? embedError.message : 'Unknown embedding error';
       return NextResponse.json(
-        { error: `Failed to get query embedding: ${embedError.message}` },
+        { error: `Failed to get query embedding: ${message}` },
         { status: 500 }
       );
     }
@@ -170,10 +171,11 @@ export async function POST(request: Request) {
     logger.log(`[Hybrid Search API] Returning ${sortedFinalProducts.length} sorted products`);
     return NextResponse.json(sortedFinalProducts);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('[Hybrid Search API] Unexpected error:', error);
+    const message = error instanceof Error ? error.message : 'Hybrid search failed';
     return NextResponse.json(
-      { error: error.message || 'Hybrid search failed' },
+      { error: message },
       { status: 500 }
     );
   }

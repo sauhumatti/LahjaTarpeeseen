@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { getManagedGiftTags, type Product, type ManagedGiftTag } from '../lib/supabase';
 import { Button } from '../components/Button';
@@ -35,7 +34,7 @@ export default function Home() {
         console.log(`[Homepage] Fetched ${tags.length} gift tags.`);
         setGiftTags(tags);
         setTagsFetchError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('[Homepage] Error fetching gift tags:', err);
         setTagsFetchError("Kategorioiden lataus epäonnistui.");
         setGiftTags([]);
@@ -72,9 +71,10 @@ export default function Home() {
       const products: Product[] = await response.json();
       console.log(`[Homepage] Search successful, received ${products.length} products.`);
       setSearchResults(products);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[Homepage] Error fetching search results:', error);
-      setSearchError(error.message || 'Haku epäonnistui. Yritä uudelleen.');
+      const message = error instanceof Error ? error.message : 'Haku epäonnistui. Yritä uudelleen.';
+      setSearchError(message);
       setSearchResults([]);
     } finally {
       setIsLoading(false);

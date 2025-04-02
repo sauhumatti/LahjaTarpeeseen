@@ -37,7 +37,7 @@ export default function ContactPage() {
         message: 'Kiitos viestistäsi! Palaamme asiaan mahdollisimman pian.'
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
+    } catch {
       setStatus({
         type: 'error',
         message: 'Viestin lähetys epäonnistui. Yritä uudelleen tai lähetä sähköpostia suoraan.'

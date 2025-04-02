@@ -26,7 +26,7 @@ export default function SearchResultsDisplay({
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-secondary-800">
-          Hakutulokset: "{query}"
+          Hakutulokset: &quot;{query}&quot;
         </h2>
         <Button
           onClick={onClose}
@@ -54,7 +54,7 @@ export default function SearchResultsDisplay({
 
       {!isLoading && !error && results.length === 0 && (
         <div className="text-center py-10">
-          <p className="text-gray-600">Ei tuloksia haulla "{query}". Kokeile toista hakusanaa.</p>
+          <p className="text-gray-600">Ei tuloksia haulla &quot;{query}&quot;. Kokeile toista hakusanaa.</p>
         </div>
       )}
 

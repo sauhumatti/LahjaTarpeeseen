@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getManagedGiftTags, generateSlug, getPopularProducts, type Product, type ManagedGiftTag } from '../../lib/supabase';
+import { getManagedGiftTags, generateSlug, getPopularProducts, type ManagedGiftTag } from '../../lib/supabase';
 import ProductCard from '../../components/ProductCard';
 
 export const metadata = {

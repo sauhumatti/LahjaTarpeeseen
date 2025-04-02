@@ -32,13 +32,14 @@ async function searchProducts(query: string): Promise<Product[]> {
   }
 }
 
-export default function SearchPage({
+export default async function SearchPage({
   searchParams
 }: {
-  searchParams: SearchParams
+  searchParams: Promise<SearchParams>
 }) {
-  // Access searchParams here
-  const query = searchParams.q?.trim();
+  // Await and access searchParams here
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams.q?.trim();
 
   // If no query, render empty state directly
   if (!query) {
@@ -68,7 +69,7 @@ async function SearchResults({ query }: { query: string }) {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold mb-2">
-            Hakutulokset: "{query}"
+            Hakutulokset: &quot;{query}&quot;
           </h1>
           <p className="text-gray-600">
             {products.length === 0

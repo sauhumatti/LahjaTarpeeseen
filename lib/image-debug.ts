@@ -1,9 +1,11 @@
+import { type Product } from './supabase';
+
 /**
  * Debug helper function to log image loading attempts
  * @param {string} url - The image URL being loaded
  * @param {string} context - Additional context about the image load attempt
  */
-function debugImageLoad(url, context) {
+function debugImageLoad(url: string, context: string) {
   console.debug(`[Image Debug] Loading image for ${context}:`, url);
 }
 
@@ -12,7 +14,7 @@ function debugImageLoad(url, context) {
  * @param {Object} product - The product object
  * @returns {string} - The image URL to use
  */
-export function getImageUrlWithDebug(product) {
+export function getImageUrlWithDebug(product: Product) {
   if (!product) {
     console.error('[getImageUrl] Product is undefined or null');
     return '/placeholder-image.jpg'; // Return a placeholder
@@ -34,11 +36,6 @@ export function getImageUrlWithDebug(product) {
       return imageUrl;
     }
     
-    // Fallback to image_url if image_path doesn't exist
-    if (product.image_url && typeof product.image_url === 'string') {
-      debugImageLoad(product.image_url, `product ${product.id} (original)`);
-      return product.image_url;
-    }
 
     // Last resort: return placeholder
     console.warn(`[getImageUrl] No image found for product ${product.id}`, product);

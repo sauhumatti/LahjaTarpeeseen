@@ -1,9 +1,21 @@
 import { notFound } from 'next/navigation';
 import { getManagedGiftTags, generateSlug, findTagFromSlug, getProductsByTag } from '../../../lib/supabase';
 import ProductCard from '../../../components/ProductCard';
+import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { category: string } }) {
-  const tagName = await findTagFromSlug(params.category);
+// Define the expected shape of the resolved params
+interface CategoryPageParams {
+  category: string;
+}
+
+// Define the props type using the Promise structure
+interface CategoryPageProps {
+  params: Promise<CategoryPageParams>;
+}
+
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const tagName = await findTagFromSlug(resolvedParams.category);
   if (!tagName) return notFound();
 
   return {
@@ -19,8 +31,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
-  const categorySlug = params.category;
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const resolvedParams = await params;
+  const categorySlug = resolvedParams.category;
   const tagName = await findTagFromSlug(categorySlug);
 
   if (!tagName) {

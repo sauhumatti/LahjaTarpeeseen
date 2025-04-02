@@ -46,10 +46,11 @@ export async function POST(request: Request) {
     logger.log(`[Embed API] Embedding generated successfully`);
     return NextResponse.json({ embedding: embedding.values });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(`[Embed API] Error generating embedding:`, error);
+    const message = error instanceof Error ? error.message : 'Failed to generate embedding';
     return NextResponse.json(
-      { error: error.message || 'Failed to generate embedding' },
+      { error: message },
       { status: 500 }
     );
   }

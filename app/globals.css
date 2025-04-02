@@ -16,7 +16,7 @@
 @layer base {
   body {
     color: #343A40; /* Using the hex value for secondary.800 directly */
-    background-color: white;
+    background-color: #F9E5C7;
   }
 }
 
@@ -40,7 +40,7 @@
 
 :root {
   --foreground: #171717;
-  --background: #ffffff;
+  --background: #F9E5C7;
 }
 
 @media (prefers-color-scheme: dark) {
