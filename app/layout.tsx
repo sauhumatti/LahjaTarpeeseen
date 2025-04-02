@@ -73,6 +73,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
                       Tietoa
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/tietosuojaseloste" className="text-gray-600 hover:text-primary-600 transition">
+                      Tietosuojaseloste
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/kayttoehdot" className="text-gray-600 hover:text-primary-600 transition">
+                      Käyttöehdot
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div>

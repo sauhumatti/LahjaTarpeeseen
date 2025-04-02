@@ -109,18 +109,16 @@ export default function Home() {
         aria-labelledby="hero-heading"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            <div className="flex-shrink-0">
-              <Image
-                src="/logo.png"
-                alt="Lahjatarpeeseen Logo"
-                width={300}
-                height={94}
-                className="w-auto h-auto"
-                priority
-              />
-            </div>
-            <div className="flex-1">
+          <div className="flex flex-col items-center text-center gap-8">
+            <Image
+              src="/logo_nobg.png"
+              alt="Lahjatarpeeseen Logo"
+              width={600}
+              height={188}
+              className="w-auto h-auto mb-4"
+              priority
+            />
+            <div className="flex flex-col items-center max-w-2xl">
               <h1
                 id="hero-heading"
                 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-6"
@@ -131,10 +129,10 @@ export default function Home() {
                 Lahjatarpeeseen on suosittelusivusto, jonne olemme keränneet kaikki parhaat lahjaideat
                 helpottaaksemme juuri sopivan lahjan löytämistä.
               </p>
-              <div className="max-w-md">
-                <SearchBar 
-                  onSearchSubmit={handleSearch} 
-                  isSearching={isLoading} 
+              <div className="w-full max-w-md">
+                <SearchBar
+                  onSearchSubmit={handleSearch}
+                  isSearching={isLoading}
                 />
               </div>
             </div>

@@ -1,0 +1,5 @@
+Contact: mailto:lahjatarpeeseen@gmail.com
+Expires: 2026-04-02T00:00:00.000Z
+Preferred-Languages: fi, en
+Policy: https://lahjatarpeeseen.fi/security-policy
+Canonical: https://lahjatarpeeseen.fi/.well-known/security.txt

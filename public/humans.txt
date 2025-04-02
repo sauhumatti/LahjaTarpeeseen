@@ -1,0 +1,13 @@
+/* TEAM */
+	Website: lahjatarpeeseen.fi
+	Contact: lahjatarpeeseen@gmail.com
+	From: Finland
+
+/* THANKS */
+
+/* SITE */
+	Last update: 2025/04/02
+	Language: Finnish
+	Doctype: HTML5
+	IDE: Visual Studio Code
+	Technology: Next.js, TypeScript, Tailwind CSS, Supabase

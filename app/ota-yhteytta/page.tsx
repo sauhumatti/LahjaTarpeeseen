@@ -14,6 +14,9 @@ interface Status {
   message: string;
 }
 
+// --- Configuration ---
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzejepa';
+
 export default function ContactPage() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -27,20 +30,34 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus({ type: 'info', message: 'Lähetetään viestiä...' });
 
-    // In production, you would send this to your API
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setStatus({
-        type: 'success',
-        message: 'Kiitos viestistäsi! Palaamme asiaan mahdollisimman pian.'
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
       });
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch {
+
+      if (response.ok) {
+        setStatus({
+          type: 'success',
+          message: 'Kiitos viestistäsi! Palaamme asiaan mahdollisimman pian.'
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        const errorData = await response.json();
+        console.error("Formspree error:", errorData);
+        setStatus({
+          type: 'error',
+          message: errorData.errors?.map((err: any) => err.message).join(', ') || 'Viestin lähetys epäonnistui. Yritä uudelleen.'
+        });
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
       setStatus({
         type: 'error',
-        message: 'Viestin lähetys epäonnistui. Yritä uudelleen tai lähetä sähköpostia suoraan.'
+        message: 'Viestin lähetys epäonnistui verkkoyhteyden vuoksi. Yritä uudelleen.'
       });
     }
   };
@@ -58,7 +75,6 @@ export default function ContactPage() {
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Ota yhteyttä</h1>
       
       <div className="grid md:grid-cols-2 gap-12">
-        {/* Contact Form */}
         <div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -142,56 +158,23 @@ export default function ContactPage() {
           </form>
         </div>
 
-        {/* Contact Information */}
         <div>
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Muut yhteydenottotavat
-            </h2>
-            
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Sähköposti</h3>
-                <p className="text-gray-600">
-                  <a
-                    href="mailto:lahjatarpeeseen@gmail.com"
-                    className="text-primary-600 hover:text-primary-700"
-                  >
-                    lahjatarpeeseen@gmail.com
-                  </a>
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Vastausaika</h3>
-                <p className="text-gray-600">
-                  Pyrimme vastaamaan kaikkiin yhteydenottoihin 1-2 arkipäivän kuluessa.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Yhteistyö</h3>
-                <p className="text-gray-600">
-                  Olemme kiinnostuneita yhteistyöstä yritysten kanssa.
-                  Kerro meille ideoistasi, ja katsotaan miten voisimme tehdä yhteistyötä!
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-primary-50 rounded-lg p-8 mt-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Usein kysytyt kysymykset
-            </h3>
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Yhteystiedot</h2>
             <p className="text-gray-600 mb-4">
-              Löydät vastauksia yleisimpiin kysymyksiin UKK-sivultamme.
+              Vastaamme yhteydenottoihin mahdollisimman pian. Voit myös seurata meitä sosiaalisessa mediassa.
             </p>
-            <a
-              href="/ukk"
-              className="text-primary-600 hover:text-primary-700 font-medium"
-            >
-              Lue UKK →
-            </a>
+            <div className="space-y-2">
+              <p className="text-gray-600">
+                <strong>Sähköposti:</strong>{' '}
+                <a 
+                  href="mailto:lahjatarpeeseen@gmail.com" 
+                  className="text-primary-600 hover:text-primary-700"
+                >
+                  lahjatarpeeseen@gmail.com
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

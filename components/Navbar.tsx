@@ -39,7 +39,7 @@ export default function Navbar() {
             <Link href="/" className="group">
               <span className="flex items-center">
                 <Image
-                  src="/logo.png"
+                  src="/logo_nobg.png"
                   alt="Lahjatarpeeseen Logo"
                   width={160}
                   height={50}
