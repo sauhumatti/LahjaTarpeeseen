@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getManagedGiftTags, generateSlug, getPopularProducts, type Product, type ManagedGiftTag } from '../../lib/supabase';
 import ProductCard from '../../components/ProductCard';
 
@@ -30,15 +31,28 @@ export default async function GiftIdeas() {
         </h2>
         {managedTags.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {managedTags.map((tag: ManagedGiftTag) => (
+            {managedTags.map((tag: ManagedGiftTag, index: number) => (
               <Link
                 href={`/lahjaideat/${generateSlug(tag.tag_name)}`}
                 key={tag.id}
                 className="group"
               >
                 <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
-                  <div className="h-48 bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition">
-                    <span className="text-xl font-semibold text-teal-800">{tag.tag_name}</span>
+                  <div className="h-48 bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition relative overflow-hidden">
+                    {tag.image_path ? (
+                      <Image
+                        src={tag.image_path}
+                        alt={tag.tag_name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:opacity-90 transition"
+                        priority={index < 3}
+                      />
+                    ) : (
+                      <span className="text-xl font-semibold text-teal-800 px-4 text-center">
+                        {tag.tag_name}
+                      </span>
+                    )}
                   </div>
                   <div className="p-5">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">{tag.tag_name}</h3>
@@ -67,7 +81,7 @@ export default async function GiftIdeas() {
           </div>
         ) : (
           <div className="bg-gray-100 rounded-lg p-8 text-center">
-            <p className="text-gray-600">Kategorioita ei löytynyt.</p>
+            <p className="text-gray-600">Aktiivisia kategorioita ei löytynyt.</p>
           </div>
         )}
       </section>

@@ -53,16 +53,22 @@ export interface Database {
           id: number
           tag_name: string
           created_at?: string
+          image_path: string | null
+          active_tag: boolean | null
         }
         Insert: {
           id?: number
           tag_name: string
           created_at?: string
+          image_path?: string | null
+          active_tag?: boolean | null
         }
         Update: {
           id?: number
           tag_name?: string
           created_at?: string
+          image_path?: string | null
+          active_tag?: boolean | null
         }
       }
     }

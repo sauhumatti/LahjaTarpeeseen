@@ -19,17 +19,18 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
 // Helper function to get managed gift tags from database
 export const getManagedGiftTags = cache(async (): Promise<ManagedGiftTag[]> => {
-  console.log('[Supabase] Fetching managed gift tags...');
+  console.log('[Supabase] Fetching active managed gift tags...');
   const { data, error } = await supabase
     .from('managed_gift_tags')
-    .select('id, tag_name')
+    .select('id, tag_name, image_path, active_tag')
+    .eq('active_tag', true)
     .order('tag_name', { ascending: true });
 
   if (error) {
-    console.error('[Supabase] Error fetching managed gift tags:', error);
+    console.error('[Supabase] Error fetching active managed gift tags:', error);
     return [];
   }
-  console.log(`[Supabase] Fetched ${data?.length || 0} managed gift tags.`);
+  console.log(`[Supabase] Fetched ${data?.length || 0} active managed gift tags.`);
   return data || [];
 });
 

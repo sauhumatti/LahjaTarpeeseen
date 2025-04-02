@@ -7,7 +7,6 @@ import { getManagedGiftTags, type Product, type ManagedGiftTag } from '../lib/su
 import { Button } from '../components/Button';
 import CategoryCarousel from '../components/CategoryCarousel';
 import SearchBar from '../components/SearchBar';
-import NewsletterForm from '../components/NewsletterForm';
 import SearchResultsDisplay from '../components/SearchResultsDisplay';
 
 interface FeaturedCategory {
@@ -205,24 +204,6 @@ export default function Home() {
               </Button>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16"
-        aria-labelledby="newsletter-heading"
-      >
-        <div className="bg-primary-50 rounded-lg p-8 text-center">
-          <h2
-            id="newsletter-heading"
-            className="text-2xl font-semibold text-secondary-900 mb-4"
-          >
-            Pysy ajan tasalla
-          </h2>
-          <p className="text-secondary-600 mb-6 max-w-2xl mx-auto">
-            Tilaa uutiskirjeemme ja saa parhaat lahjaideat ja tarjoukset suoraan sähköpostiisi.
-          </p>
-          <NewsletterForm />
         </div>
       </section>
     </main>
