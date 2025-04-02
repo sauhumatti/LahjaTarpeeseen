@@ -1,8 +1,8 @@
-import { generateSlug, type GiftTag } from '../lib/supabase';
+import { generateSlug, type ManagedGiftTag } from '../lib/supabase';
 import { CategoryCarouselClient } from './CategoryCarouselClient';
 
 interface CategoryCarouselProps {
-  categories: readonly GiftTag[] | GiftTag[];
+  categories: readonly ManagedGiftTag[] | ManagedGiftTag[];
 }
 
 /**
@@ -12,8 +12,8 @@ interface CategoryCarouselProps {
 export default function CategoryCarousel({ categories }: CategoryCarouselProps) {
   // Prepare categories data for client component
   const preparedCategories = categories.map((category, index) => ({
-    name: category,
-    slug: generateSlug(category),
+    name: category.tag_name,
+    slug: generateSlug(category.tag_name),
     imageIndex: index
   }));
   

@@ -1,18 +1,14 @@
-// app/page.tsx
 'use client';
 
-import { useState, useCallback, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GIFT_TAGS, type Product } from '../lib/supabase';
+import { getManagedGiftTags, type Product, type ManagedGiftTag } from '../lib/supabase';
 import { Button } from '../components/Button';
 import CategoryCarousel from '../components/CategoryCarousel';
 import SearchBar from '../components/SearchBar';
 import NewsletterForm from '../components/NewsletterForm';
-import ProductCard from '../components/ProductCard';
-import { logger } from '@/lib/logger';
-
-const INITIAL_VISIBLE_COUNT = 6;
+import SearchResultsDisplay from '../components/SearchResultsDisplay';
 
 interface FeaturedCategory {
   name: string;
@@ -21,12 +17,78 @@ interface FeaturedCategory {
 }
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('');
+  // State for gift tags
+  const [giftTags, setGiftTags] = useState<ManagedGiftTag[]>([]);
+  const [tagsFetchError, setTagsFetchError] = useState<string | null>(null);
+
+  // State for search
   const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [visibleResultsCount, setVisibleResultsCount] = useState(INITIAL_VISIBLE_COUNT);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Fetch initial gift tags
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await getManagedGiftTags();
+        console.log(`[Homepage] Fetched ${tags.length} gift tags.`);
+        setGiftTags(tags);
+        setTagsFetchError(null);
+      } catch (err: any) {
+        console.error('[Homepage] Error fetching gift tags:', err);
+        setTagsFetchError("Kategorioiden lataus epäonnistui.");
+        setGiftTags([]);
+      }
+    };
+    fetchTags();
+  }, []);
+
+  // Search handling
+  const handleSearch = async (query: string) => {
+    if (!query || query.length < 2) return;
+
+    console.log(`[Homepage] Starting search for: "${query}"`);
+    setIsLoading(true);
+    setShowResults(true);
+    setSearchResults([]);
+    setSearchError(null);
+    setSearchQuery(query);
+
+    try {
+      const response = await fetch('/api/hybrid-search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Search API returned ${response.status}`);
+      }
+
+      const products: Product[] = await response.json();
+      console.log(`[Homepage] Search successful, received ${products.length} products.`);
+      setSearchResults(products);
+    } catch (error: any) {
+      console.error('[Homepage] Error fetching search results:', error);
+      setSearchError(error.message || 'Haku epäonnistui. Yritä uudelleen.');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Close search results
+  const handleCloseResults = () => {
+    setShowResults(false);
+    setSearchQuery('');
+    setSearchResults([]);
+    setSearchError(null);
+  };
 
   const featuredCategories: FeaturedCategory[] = [
     {
@@ -40,80 +102,6 @@ export default function Home() {
       description: "Ainutlaatuiset lahjaideat hääparille"
     }
   ];
-
-  const fetchSearchResults = useCallback(async (query: string) => {
-    if (!query || query.length < 2) {
-      logger.warn('[Homepage Search] fetchSearchResults called with invalid query:', query);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setHasSearched(true);
-    setVisibleResultsCount(INITIAL_VISIBLE_COUNT);
-
-    try {
-      const response = await fetch('/api/hybrid-search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Haku epäonnistui: ${response.statusText}`);
-      }
-
-      const data: Product[] = await response.json();
-      setSearchResults(data);
-      logger.log(`[Homepage Search] Found ${data.length} results for "${query}"`);
-
-    } catch (err: any) {
-      logger.error('[Homepage Search] Error fetching results:', err);
-      setError(err.message || 'Hakuvirhe');
-      setSearchResults([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = event.target.value;
-    setSearchTerm(newSearchTerm);
-
-    // Clear results if input is emptied
-    if (newSearchTerm.trim() === '') {
-      setSearchResults([]);
-      setHasSearched(false);
-      setVisibleResultsCount(INITIAL_VISIBLE_COUNT);
-      setError(null);
-    }
-  };
-
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const query = searchTerm.trim();
-
-    if (query && query.length >= 2) {
-      logger.log(`[Homepage Search] Submitting search for: "${query}"`);
-      fetchSearchResults(query);
-    } else if (query.length > 0) {
-      setSearchResults([]);
-      setHasSearched(true);
-      setVisibleResultsCount(INITIAL_VISIBLE_COUNT);
-      setError("Anna vähintään 2 merkkiä hakusanaksi.");
-      logger.warn(`[Homepage Search] Submitted short query: "${query}"`);
-    } else {
-      setSearchResults([]);
-      setHasSearched(false);
-      setVisibleResultsCount(INITIAL_VISIBLE_COUNT);
-      setError(null);
-      logger.log('[Homepage Search] Submitted empty query.');
-    }
-  };
-
-  const handleLoadMore = () => {
-    setVisibleResultsCount(searchResults.length);
-  };
 
   return (
     <main>
@@ -145,11 +133,9 @@ export default function Home() {
                 helpottaaksemme juuri sopivan lahjan löytämistä.
               </p>
               <div className="max-w-md">
-                <SearchBar
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  onSubmit={handleSearchSubmit}
-                  isLoading={isLoading}
+                <SearchBar 
+                  onSearchSubmit={handleSearch} 
+                  isSearching={isLoading} 
                 />
               </div>
             </div>
@@ -157,51 +143,15 @@ export default function Home() {
         </div>
       </section>
 
-      {(hasSearched || isLoading) && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 border-t border-gray-200 pt-8">
-          {isLoading && (
-            <div className="text-center py-6">
-              <p className="text-gray-600">Haetaan tuloksia...</p>
-            </div>
-          )}
-          {error && (
-            <div className="text-center py-6 text-red-600 bg-red-50 p-4 rounded">
-              <p>Virhe: {error}</p>
-            </div>
-          )}
-          {!isLoading && !error && hasSearched && (
-            <>
-              <h2 className="text-2xl font-semibold text-secondary-900 mb-4">
-                Hakutulokset {searchTerm ? `sanalle "${searchTerm}"` : ''}
-              </h2>
-              {searchResults.length > 0 ? (
-                <div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                    {searchResults.slice(0, visibleResultsCount).map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
-                  {searchResults.length > visibleResultsCount && (
-                    <div className="mt-8 text-center">
-                      <Button
-                        onClick={handleLoadMore}
-                        variant="outline"
-                        size="md"
-                        disabled={isLoading}
-                      >
-                        Näytä lisää ({searchResults.length - visibleResultsCount} kpl)
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-6 bg-gray-50 p-4 rounded">
-                  <p className="text-gray-600">Ei tuloksia haullesi.</p>
-                </div>
-              )}
-            </>
-          )}
-        </section>
+      {/* Search Results Section */}
+      {showResults && (
+        <SearchResultsDisplay
+          isLoading={isLoading}
+          results={searchResults}
+          error={searchError}
+          query={searchQuery}
+          onClose={handleCloseResults}
+        />
       )}
 
       <section
@@ -214,7 +164,17 @@ export default function Home() {
         >
           Selaa kategorioittain
         </h2>
-        <CategoryCarousel categories={GIFT_TAGS} />
+        {tagsFetchError ? (
+          <div className="text-center py-6 text-red-600 bg-red-50 p-4 rounded">
+            <p>{tagsFetchError}</p>
+          </div>
+        ) : giftTags.length > 0 ? (
+          <CategoryCarousel categories={giftTags} />
+        ) : (
+          <div className="text-center py-6 bg-gray-50 p-4 rounded">
+            <p className="text-gray-600">Kategorioita ei löytynyt.</p>
+          </div>
+        )}
       </section>
 
       <section

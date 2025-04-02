@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { GIFT_TAGS, generateSlug, getPopularProducts, type GiftTag, type Product } from '../../lib/supabase';
+import { getManagedGiftTags, generateSlug, getPopularProducts, type Product, type ManagedGiftTag } from '../../lib/supabase';
 import ProductCard from '../../components/ProductCard';
 
 export const metadata = {
@@ -13,8 +13,11 @@ export const viewport = {
 };
 
 export default async function GiftIdeas() {
-  // Fetch popular products
-  const popularProducts: Product[] = await getPopularProducts(8);
+  // Fetch managed tags and popular products
+  const [managedTags, popularProducts] = await Promise.all([
+    getManagedGiftTags(),
+    getPopularProducts(8)
+  ]);
   
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -25,42 +28,48 @@ export default async function GiftIdeas() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-6">
           Selaa kategorioittain
         </h2>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {GIFT_TAGS.map((category: GiftTag) => (
-            <Link
-              href={`/lahjaideat/${generateSlug(category)}`}
-              key={category}
-              className="group"
-            >
-              <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
-                <div className="h-48 bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition">
-                  <span className="text-xl font-semibold text-teal-800">{category}</span>
+        {managedTags.length > 0 ? (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {managedTags.map((tag: ManagedGiftTag) => (
+              <Link
+                href={`/lahjaideat/${generateSlug(tag.tag_name)}`}
+                key={tag.id}
+                className="group"
+              >
+                <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
+                  <div className="h-48 bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition">
+                    <span className="text-xl font-semibold text-teal-800">{tag.tag_name}</span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">{tag.tag_name}</h3>
+                    <p className="text-gray-600 mb-4">
+                      Löydä parhaat {tag.tag_name.toLowerCase()} jokaiseen tilanteeseen.
+                    </p>
+                    <span className="inline-flex items-center text-teal-600 font-medium">
+                      Näytä kaikki
+                      <svg 
+                        className="ml-2 h-5 w-5 transition transform group-hover:translate-x-1" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 20 20" 
+                        fill="currentColor"
+                      >
+                        <path 
+                          fillRule="evenodd" 
+                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" 
+                          clipRule="evenodd" 
+                        />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{category}</h3>
-                  <p className="text-gray-600 mb-4">
-                    Löydä parhaat {category.toLowerCase()} jokaiseen tilanteeseen.
-                  </p>
-                  <span className="inline-flex items-center text-teal-600 font-medium">
-                    Näytä kaikki
-                    <svg 
-                      className="ml-2 h-5 w-5 transition transform group-hover:translate-x-1" 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 20 20" 
-                      fill="currentColor"
-                    >
-                      <path 
-                        fillRule="evenodd" 
-                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" 
-                        clipRule="evenodd" 
-                      />
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-gray-100 rounded-lg p-8 text-center">
+            <p className="text-gray-600">Kategorioita ei löytynyt.</p>
+          </div>
+        )}
       </section>
 
       {/* Popular gifts section */}

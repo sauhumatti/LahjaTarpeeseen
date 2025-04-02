@@ -17,15 +17,16 @@ export async function POST(request: Request) {
     const body = await request.json() as SearchRequest;
     const { query, limit = 20 } = body;
 
-    if (!query || typeof query !== 'string') {
-      logger.error('[Hybrid Search API] Invalid search query');
+    if (!query || typeof query !== 'string' || query.trim().length === 0) {
+      logger.error('[Hybrid Search API] Invalid or empty search query');
       return NextResponse.json(
-        { error: 'Invalid search query' },
+        { error: 'Invalid or empty search query' },
         { status: 400 }
       );
     }
 
-    logger.log(`[Hybrid Search API] Received query: "${query}"`);
+    const trimmedQuery = query.trim();
+    logger.log(`[Hybrid Search API] Received query: "${trimmedQuery}"`);
 
     // Step 1: Get Query Embedding
     const embedApiUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/embed-query`;
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
       const embedResponse = await fetch(embedApiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: query }),
+        body: JSON.stringify({ text: trimmedQuery }),
       });
 
       if (!embedResponse.ok) {
@@ -58,21 +59,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 2: Perform Keyword Search
-    logger.log(`[Hybrid Search API] Performing keyword search...`);
+    // Step 2: Perform Keyword Search (Simplified: Text Fields Only)
+    logger.log(`[Hybrid Search API] Performing simplified keyword search (text fields only)...`);
+    // Search only in name, description, category, domain
+    const keywordQuery = `name.ilike.%${trimmedQuery}%,description.ilike.%${trimmedQuery}%,category.ilike.%${trimmedQuery}%,domain.ilike.%${trimmedQuery}%`;
+
     const { data: keywordResults, error: keywordError } = await supabase
       .from('products')
       .select('id')
-      .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
-      .limit(limit * 2);
+      .or(keywordQuery)
+      .limit(limit * 5); // Fetch more candidates for keyword search initially
 
     if (keywordError) {
       logger.error('[Hybrid Search API] Keyword search error:', keywordError);
-      // Continue with vector search even if keyword search fails
+      // Don't fail the whole request, proceed to vector search
     }
 
-    const keywordIds = keywordResults?.map(p => p.id) || [];
-    logger.log(`[Hybrid Search API] Keyword search found ${keywordIds.length} potential matches`);
+    const keywordIds = new Set(keywordResults?.map(p => p.id) || []);
+    logger.log(`[Hybrid Search API] Keyword search found ${keywordIds.size} potential matches`);
 
     // Step 3: Perform Vector Search
     logger.log(`[Hybrid Search API] Performing vector search...`);
@@ -85,7 +89,7 @@ export async function POST(request: Request) {
     if (vectorError) {
       logger.error('[Hybrid Search API] Vector search error:', vectorError);
       // If vector search fails but we have keyword results, continue with those
-      if (keywordIds.length === 0) {
+      if (keywordIds.size === 0) {
         return NextResponse.json(
           { error: 'Both keyword and vector searches failed' },
           { status: 500 }
@@ -101,16 +105,44 @@ export async function POST(request: Request) {
       : [];
     logger.log(`[Hybrid Search API] Vector search found ${vectorMatches.length} potential matches`);
 
-    // Step 4: Combine Results using RRF
-    logger.log(`[Hybrid Search API] Combining and ranking results...`);
-    const rankedIds = reciprocalRankFusion(
-      keywordResults || [],
-      vectorMatches,
-      limit
-    );
+    // Step 4: Combine and Rank Results (Prioritize Keywords)
+    logger.log(`[Hybrid Search API] Combining and ranking results with keyword priority...`);
+    let finalRankedIds: number[] = [];
 
-    if (rankedIds.length === 0) {
-      logger.log(`[Hybrid Search API] No results found`);
+    if (keywordIds.size > 0) {
+        // --- Keyword Matches Exist: Prioritize them ---
+        logger.log('[Hybrid Search API] Prioritizing keyword matches.');
+
+        // 1. Filter vector matches to include only those also found by keyword
+        const keywordVectorMatches = vectorMatches.filter(vm => keywordIds.has(vm.id));
+        logger.log(`[Hybrid Search API] Found ${keywordVectorMatches.length} matches common to keyword and vector searches.`);
+
+        // 2. Sort these common matches by vector similarity (highest similarity first)
+        keywordVectorMatches.sort((a, b) => b.similarity - a.similarity);
+
+        // 3. Get the IDs from the sorted common matches
+        const rankedKeywordVectorIds = keywordVectorMatches.map(vm => vm.id);
+
+        // 4. Identify keyword matches NOT found by vector search
+        const keywordOnlyIds = Array.from(keywordIds).filter(id => !keywordVectorMatches.some(vm => vm.id === id));
+        logger.log(`[Hybrid Search API] Found ${keywordOnlyIds.length} matches from keywords only.`);
+
+        // 5. Combine: Prioritized common matches first, then keyword-only matches
+        finalRankedIds = [...rankedKeywordVectorIds, ...keywordOnlyIds];
+
+    } else if (vectorMatches.length > 0) {
+        // --- No Keyword Matches: Fallback to Vector Search ---
+        logger.log('[Hybrid Search API] No keyword matches found. Falling back to vector search ranking.');
+        vectorMatches.sort((a, b) => b.similarity - a.similarity);
+        finalRankedIds = vectorMatches.map(vm => vm.id);
+    }
+
+    // Limit results
+    const limitedRankedIds = finalRankedIds.slice(0, limit);
+    logger.log(`[Hybrid Search API] Final ranked IDs (limited to ${limit}): ${limitedRankedIds.join(', ')}`);
+
+    if (limitedRankedIds.length === 0) {
+      logger.log(`[Hybrid Search API] No results after ranking and limiting.`);
       return NextResponse.json([]);
     }
 
@@ -119,7 +151,7 @@ export async function POST(request: Request) {
     const { data: finalProducts, error: finalError } = await supabase
       .from('products')
       .select('*')
-      .in('id', rankedIds);
+      .in('id', limitedRankedIds); // Fetch details only for the final ranked & limited IDs
 
     if (finalError) {
       logger.error('[Hybrid Search API] Error fetching final products:', finalError);
@@ -129,11 +161,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Re-order products according to RRF ranking
+    // Re-order products according to the final ranking
     const productMap = new Map(finalProducts?.map(p => [p.id, p]));
-    const sortedFinalProducts = rankedIds
+    const sortedFinalProducts = limitedRankedIds
       .map(id => productMap.get(id))
-      .filter((p): p is Product => p !== undefined);
+      .filter((p): p is Product => p !== undefined); // Type guard to filter out undefined
 
     logger.log(`[Hybrid Search API] Returning ${sortedFinalProducts.length} sorted products`);
     return NextResponse.json(sortedFinalProducts);
@@ -145,36 +177,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-// Helper function for Reciprocal Rank Fusion
-function reciprocalRankFusion(
-  keywordResults: { id: number }[],
-  vectorResults: VectorMatch[],
-  limit: number,
-  k: number = 60
-): number[] {
-  const scores: { [id: number]: number } = {};
-
-  // Process keyword results
-  keywordResults.forEach((item, index) => {
-    const rank = index + 1;
-    if (!scores[item.id]) scores[item.id] = 0;
-    scores[item.id] += 1 / (k + rank);
-  });
-
-  // Process vector results
-  vectorResults.forEach((item, index) => {
-    const rank = index + 1;
-    if (!scores[item.id]) scores[item.id] = 0;
-    // Add similarity score influence
-    const similarityBoost = item.similarity * 0.5; // Adjust weight as needed
-    scores[item.id] += (1 / (k + rank)) + similarityBoost;
-  });
-
-  // Sort IDs by score in descending order
-  return Object.entries(scores)
-    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-    .slice(0, limit)
-    .map(([id]) => parseInt(id, 10));
 }

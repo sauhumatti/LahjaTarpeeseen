@@ -15,6 +15,7 @@ export interface Database {
           features?: string[]
           domain?: string
           affiliate_url?: string
+          embedding?: any
         }
         Insert: {
           id?: number
@@ -29,6 +30,7 @@ export interface Database {
           features?: string[]
           domain?: string
           affiliate_url?: string
+          embedding?: any
         }
         Update: {
           id?: number
@@ -43,6 +45,24 @@ export interface Database {
           features?: string[]
           domain?: string
           affiliate_url?: string
+          embedding?: any
+        }
+      }
+      managed_gift_tags: {
+        Row: {
+          id: number
+          tag_name: string
+          created_at?: string
+        }
+        Insert: {
+          id?: number
+          tag_name: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          tag_name?: string
+          created_at?: string
         }
       }
     }
@@ -50,7 +70,18 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_products: {
+        Args: {
+          query_embedding: number[]
+          match_count: number
+        }
+        Returns: {
+          id: number
+          similarity: number
+        }[]
+      }
     }
   }
 }
+
+export type ManagedGiftTag = Database['public']['Tables']['managed_gift_tags']['Row'];

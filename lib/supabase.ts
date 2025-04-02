@@ -1,24 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../types/database.types';
+import { cache } from 'react';
 
-// Use Database type to define Product
+// Use Database type to define types
 export type Product = Database['public']['Tables']['products']['Row'];
-
-// Gift categories/tags used throughout the site
-export const GIFT_TAGS = [
-  "Äitienpäivälahjat",
-  "Isänpäivälahjat",
-  "Joululahjat",
-  "Valmistujaislahjat",
-  "Häälahjat",
-  "Ristiäislahjat",
-  "Ystävänpäivälahjat",
-  "Syntymäpäivälahjat",
-  "Rippijuhlalahjat",
-  "Kiitoslahjat"
-];
-
-export type GiftTag = (typeof GIFT_TAGS)[number];
+export type ManagedGiftTag = Database['public']['Tables']['managed_gift_tags']['Row'];
+export type GiftTag = string;
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,6 +16,22 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+
+// Helper function to get managed gift tags from database
+export const getManagedGiftTags = cache(async (): Promise<ManagedGiftTag[]> => {
+  console.log('[Supabase] Fetching managed gift tags...');
+  const { data, error } = await supabase
+    .from('managed_gift_tags')
+    .select('id, tag_name')
+    .order('tag_name', { ascending: true });
+
+  if (error) {
+    console.error('[Supabase] Error fetching managed gift tags:', error);
+    return [];
+  }
+  console.log(`[Supabase] Fetched ${data?.length || 0} managed gift tags.`);
+  return data || [];
+});
 
 // Helper functions for fetching products
 export async function getProducts(limit: number = 20): Promise<Product[]> {
@@ -51,7 +54,7 @@ export async function getProductsByTag(tag: GiftTag, limit: number = 20): Promis
       .from('products')
       .select('*')
       // Ensure the tag is checked as an element within the JSON array
-      .contains('tags', JSON.stringify([tag])) // <--- CORRECTED LINE
+      .contains('tags', JSON.stringify([tag]))
       .order('id', { ascending: false })
       .limit(limit);
 
@@ -100,8 +103,12 @@ export function generateSlug(tag: string): string {
 }
 
 // Helper function to find tag from slug
-export function findTagFromSlug(slug: string): GiftTag | undefined {
-  return GIFT_TAGS.find(tag => generateSlug(tag) === slug);
+export async function findTagFromSlug(slug: string): Promise<GiftTag | undefined> {
+  console.log(`[Supabase] Finding tag from slug: ${slug}`);
+  const tags = await getManagedGiftTags();
+  const foundTag = tags.find(tag => generateSlug(tag.tag_name) === slug);
+  console.log(`[Supabase] Tag found for slug "${slug}": ${foundTag?.tag_name}`);
+  return foundTag?.tag_name;
 }
 
 // Simple search function
