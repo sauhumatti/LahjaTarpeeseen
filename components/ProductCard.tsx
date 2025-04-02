@@ -60,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
           
           <div className="flex items-center justify-between mb-2">
-            <p className="text-lg font-semibold text-teal-600">
+            <p className="text-lg font-semibold text-primary-600">
               {product.price?.toFixed(2)} €
             </p>
             {product.domain && (
@@ -77,7 +77,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-700">
+            <span className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
               Katso tuote
               <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />

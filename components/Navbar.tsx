@@ -30,7 +30,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
+    <nav className={`sticky top-0 z-50 bg-[#F99973] transition-shadow duration-300 ${
       scrolled ? 'shadow-md' : ''
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,7 +58,7 @@ export default function Navbar() {
               <Link 
                 key={item.name}
                 href={item.href}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                className="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-[#FF8A5E] hover:text-white transition"
               >
                 {item.name}
               </Link>
@@ -69,7 +69,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-500 hover:text-primary-500 focus:outline-none p-2"
+              className="text-white hover:text-[#FF8A5E] focus:outline-none p-2"
               aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? (
@@ -88,12 +88,12 @@ export default function Navbar() {
       
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white pt-2 pb-3 space-y-1 shadow-lg">
+        <div className="md:hidden bg-[#F99973] pt-2 pb-3 space-y-1 shadow-lg">
           {navigationItems.map((item) => (
             <Link 
               key={item.name}
               href={item.href}
-              className="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600"
+              className="block px-4 py-2 text-base font-medium text-white hover:bg-[#FF8A5E] hover:text-white"
               onClick={() => setIsMenuOpen(false)}
             >
               {item.name}

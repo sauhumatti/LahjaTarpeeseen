@@ -105,7 +105,7 @@ export default function Home() {
   return (
     <main>
       <section
-        className="bg-gradient-to-b from-primary-50 to-white py-16 mb-8"
+        className="bg-[#F99973] py-16 mb-8"
         aria-labelledby="hero-heading"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -38,7 +38,7 @@ export default async function GiftIdeas() {
                 className="group"
               >
                 <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
-                  <div className="h-48 bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition relative overflow-hidden">
+                  <div className="h-48 bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition relative overflow-hidden">
                     {tag.image_path ? (
                       <Image
                         src={tag.image_path}
@@ -49,7 +49,7 @@ export default async function GiftIdeas() {
                         priority={index < 3}
                       />
                     ) : (
-                      <span className="text-xl font-semibold text-teal-800 px-4 text-center">
+                      <span className="text-xl font-semibold text-primary-800 px-4 text-center">
                         {tag.tag_name}
                       </span>
                     )}
@@ -59,7 +59,7 @@ export default async function GiftIdeas() {
                     <p className="text-gray-600 mb-4">
                       Löydä parhaat {tag.tag_name.toLowerCase()} jokaiseen tilanteeseen.
                     </p>
-                    <span className="inline-flex items-center text-teal-600 font-medium">
+                    <span className="inline-flex items-center text-primary-600 font-medium">
                       Näytä kaikki
                       <svg 
                         className="ml-2 h-5 w-5 transition transform group-hover:translate-x-1" 
@@ -92,7 +92,7 @@ export default async function GiftIdeas() {
           Suosituimmat lahjat
         </h2>
         {popularProducts.length === 0 ? (
-          <div className="bg-teal-50 rounded-lg p-8">
+          <div className="bg-primary-50 rounded-lg p-8">
             <p className="text-center text-gray-600">
               Tulossa pian! Täältä löydät pian suosituimmat lahjaideat eri kategorioista.
             </p>
@@ -118,13 +118,13 @@ export default async function GiftIdeas() {
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
             href="/lahjaideat/opas"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700"
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
           >
             Käytä lahjaopasta
           </Link>
           <Link
             href="/ota-yhteytta"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-teal-700 bg-teal-100 hover:bg-teal-200"
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200"
           >
             Ota yhteyttä
           </Link>

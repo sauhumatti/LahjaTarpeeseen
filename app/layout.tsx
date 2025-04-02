@@ -46,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={inter.className}>
         <Navbar />
         <main className="min-h-screen">{children}</main>
-        <footer className="bg-primary-50 mt-16">
+        <footer className="bg-[#F9E5C7] mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
@@ -79,8 +79,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <h3 className="text-lg font-semibold mb-4">Yhteystiedot</h3>
                 <p className="text-gray-600">
                   Sähköposti:{' '}
-                  <a href="mailto:info@lahjatarpeeseen.fi" className="text-primary-600 hover:text-primary-700 transition">
-                    info@lahjatarpeeseen.fi
+                  <a href="mailto:lahjatarpeeseen@gmail.com" className="text-primary-600 hover:text-primary-700 transition">
+                    lahjatarpeeseen@gmail.com
                   </a>
                 </p>
               </div>

@@ -71,11 +71,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       )}
 
       {/* Tips section */}
-      <section className="mt-16 bg-teal-50 rounded-lg p-8">
+      <section className="mt-16 bg-primary-50 rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">
           Vinkkejä {tagName.toLowerCase()} valintaan
         </h2>
-        <div className="prose prose-teal max-w-none">
+        <div className="prose prose-primary max-w-none">
           <p>
             Hyvän lahjan valinnassa kannattaa huomioida saajan mieltymykset,
             harrastukset ja elämäntilanne. Valikoimastamme löydät varmasti

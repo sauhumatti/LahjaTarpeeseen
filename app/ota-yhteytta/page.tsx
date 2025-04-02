@@ -71,7 +71,7 @@ export default function ContactPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
               />
             </div>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
               />
             </div>
@@ -101,7 +101,7 @@ export default function ContactPage() {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
               />
             </div>
@@ -116,7 +116,7 @@ export default function ContactPage() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
               ></textarea>
             </div>
@@ -124,7 +124,7 @@ export default function ContactPage() {
             <div>
               <button
                 type="submit"
-                className="w-full bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition"
+                className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition"
               >
                 Lähetä viesti
               </button>
@@ -132,7 +132,7 @@ export default function ContactPage() {
 
             {status.message && (
               <div className={`p-4 rounded-md ${
-                status.type === 'success' ? 'bg-green-50 text-green-700' :
+                status.type === 'success' ? 'bg-primary-50 text-primary-700' :
                 status.type === 'error' ? 'bg-red-50 text-red-700' :
                 'bg-blue-50 text-blue-700'
               }`}>
@@ -153,11 +153,11 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Sähköposti</h3>
                 <p className="text-gray-600">
-                  <a 
-                    href="mailto:info@lahjatarpeeseen.fi" 
-                    className="text-teal-600 hover:text-teal-700"
+                  <a
+                    href="mailto:lahjatarpeeseen@gmail.com"
+                    className="text-primary-600 hover:text-primary-700"
                   >
-                    info@lahjatarpeeseen.fi
+                    lahjatarpeeseen@gmail.com
                   </a>
                 </p>
               </div>
@@ -172,23 +172,23 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Yhteistyö</h3>
                 <p className="text-gray-600">
-                  Olemme kiinnostuneita yhteistyöstä yritysten kanssa. 
+                  Olemme kiinnostuneita yhteistyöstä yritysten kanssa.
                   Kerro meille ideoistasi, ja katsotaan miten voisimme tehdä yhteistyötä!
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-teal-50 rounded-lg p-8 mt-8">
+          <div className="bg-primary-50 rounded-lg p-8 mt-8">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Usein kysytyt kysymykset
             </h3>
             <p className="text-gray-600 mb-4">
               Löydät vastauksia yleisimpiin kysymyksiin UKK-sivultamme.
             </p>
-            <a 
-              href="/ukk" 
-              className="text-teal-600 hover:text-teal-700 font-medium"
+            <a
+              href="/ukk"
+              className="text-primary-600 hover:text-primary-700 font-medium"
             >
               Lue UKK →
             </a>

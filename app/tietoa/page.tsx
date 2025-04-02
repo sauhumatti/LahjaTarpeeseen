@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata = {
   title: 'Tietoa meistä - Lahjatarpeeseen',
@@ -16,6 +17,22 @@ export default function AboutPage() {
           helpottaaksemme juuri sopivan lahjan löytämistä. Oli kyseessä sitten vuosipäivälahja, 
           häälahja tai ristiäislahja, löydät parhaat lahjavinkit täältä.
         </p>
+
+        <figure className="my-12 mx-auto max-w-2xl">
+          <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
+            <Image
+              src="/me.png"
+              alt="Saku ja Milla, Lahjatarpeeseen.fi perustajat"
+              fill
+              style={{ objectFit: 'contain' }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+              priority
+            />
+          </div>
+          <figcaption className="mt-3 text-center text-gray-600">
+            Lahjatarpeeseen sivuston perustajat Milla Grönman ja Saku-Matti Syrjä
+          </figcaption>
+        </figure>
         
         <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">
           Mistä kaikki sitten sai alkunsa?
@@ -40,28 +57,28 @@ export default function AboutPage() {
           ja Milla rakastaa pähkäillä visuaalista kokonaisuutta ja sanallistaa taustatarinoita.
         </p>
 
-        <div className="bg-teal-50 rounded-lg p-8 my-10">
+        <div className="bg-primary-50 rounded-lg p-8 my-10">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">Meidän lupauksemme sinulle</h3>
           <p className="text-lg text-gray-700 leading-relaxed">
-            Jokainen sivustolla näkyvä lahjaidea on meidän itse valitsemamme ja suosittelemamme. 
-            Haluamme auttaa sinua löytämään juuri sen täydellisen lahjan, joka ilahduttaa 
+            Jokainen sivustolla näkyvä lahjaidea on meidän itse valitsemamme ja suosittelemamme.
+            Haluamme auttaa sinua löytämään juuri sen täydellisen lahjan, joka ilahduttaa
             lahjansaajaa ja tekee lahjanantohetkestä erityisen.
           </p>
         </div>
         
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Ota yhteyttä</h2>
         <p className="text-lg text-gray-700 leading-relaxed mb-6">
-          Jos sinulla on kysyttävää, palautetta tai yhteistyöehdotuksia, voit ottaa meihin yhteyttä 
-          sähköpostitse: <a href="mailto:info@lahjatarpeeseen.fi" className="text-teal-600 hover:text-teal-700">
-          info@lahjatarpeeseen.fi</a>
+          Jos sinulla on kysyttävää, palautetta tai yhteistyöehdotuksia, voit ottaa meihin yhteyttä
+          sähköpostitse: <a href="mailto:lahjatarpeeseen@gmail.com" className="text-primary-600 hover:text-primary-700">
+          lahjatarpeeseen@gmail.com</a>
         </p>
       </div>
 
       {/* Call to action */}
       <div className="mt-16 text-center">
-        <Link 
+        <Link
           href="/lahjaideat"
-          className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700"
+          className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
         >
           Selaa lahjaideoita
         </Link>
