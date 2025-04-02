@@ -9,6 +9,10 @@ interface FormData {
   message: string;
 }
 
+interface FormspreeError {
+  errors: Array<{ message: string }>;
+}
+
 interface Status {
   type: '' | 'info' | 'success' | 'error';
   message: string;
@@ -46,11 +50,11 @@ export default function ContactPage() {
         });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json() as FormspreeError;
         console.error("Formspree error:", errorData);
         setStatus({
           type: 'error',
-          message: errorData.errors?.map((err: any) => err.message).join(', ') || 'Viestin lähetys epäonnistui. Yritä uudelleen.'
+          message: errorData.errors?.map((err: { message: string }) => err.message).join(', ') || 'Viestin lähetys epäonnistui. Yritä uudelleen.'
         });
       }
     } catch (error) {
