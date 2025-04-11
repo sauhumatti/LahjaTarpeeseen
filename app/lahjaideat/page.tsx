@@ -106,30 +106,6 @@ export default async function GiftIdeas() {
         )}
       </section>
 
-      {/* Gift finding help section */}
-      <section className="mt-16 bg-white shadow-sm rounded-lg p-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Tarvitsetko apua lahjan valinnassa?
-        </h2>
-        <p className="text-gray-600 mb-6">
-          Jos et ole varma mikä lahja sopisi parhaiten, voit käyttää lahjaopastamme 
-          tai ottaa yhteyttä meihin. Autamme mielellämme sopivan lahjan löytämisessä!
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/lahjaideat/opas"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-          >
-            Käytä lahjaopasta
-          </Link>
-          <Link
-            href="/ota-yhteytta"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200"
-          >
-            Ota yhteyttä
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

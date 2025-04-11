@@ -46,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={inter.className}>
         <Navbar />
         <main className="min-h-screen">{children}</main>
-        <footer className="bg-[#F9E5C7] mt-16">
+        <footer className="bg-[#F9E5C7]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
@@ -96,7 +96,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </div>
             <div className="border-t border-primary-100 mt-8 pt-8 text-center text-gray-500">
-              <p>&copy; {new Date().getFullYear()} Lahjatarpeeseen. Kaikki oikeudet pidätetään.</p>
+              <p>&copy; {new Date().getFullYear()} Lahjatarpeeseen</p>
             </div>
           </div>
         </footer>
