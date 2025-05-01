@@ -74,7 +74,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <nav className="flex mb-8 text-sm" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">
             <li>
-              <Link href="/" className="text-gray-500 hover:text-teal-600">
+              <Link href="/" className="text-gray-500 hover:text-primary-600">
                 Etusivu
               </Link>
             </li>
@@ -82,7 +82,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <Link href="/lahjaideat" className="text-gray-500 hover:text-teal-600">
+              <Link href="/lahjaideat" className="text-gray-500 hover:text-primary-600">
                 Lahjaideat
               </Link>
             </li>
@@ -93,7 +93,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </svg>
                 <Link 
                   href={`/lahjaideat/${generateSlug(tagsArray[0])}`}
-                  className="text-gray-500 hover:text-teal-600"
+                  className="text-gray-500 hover:text-primary-600"
                 >
                   {tagsArray[0]}
                 </Link>
@@ -133,7 +133,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </h1>
             
             {product.price && (
-              <p className="text-2xl font-semibold text-teal-600 mb-6">
+              <p className="text-2xl font-semibold text-primary-600 mb-6">
                 {product.price.toFixed(2)} €
               </p>
             )}
@@ -164,7 +164,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <Link 
                       key={index}
                       href={`/lahjaideat/${generateSlug(tag)}`}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-teal-50 hover:text-teal-700"
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-primary-50 hover:text-primary-700"
                     >
                       {tag}
                     </Link>
@@ -185,7 +185,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 href={product.affiliate_url || product.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 transition"
+                className="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition"
               >
                 Siirry verkkokauppaan
                 <svg className="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
